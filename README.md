@@ -11,11 +11,12 @@ CLI users and developers must both follow these steps to get the application and
 ## Download bin
 Currently, CLI is supported on the following platforms, please choose your bin file:
 
-[windows](https://github.com)
+[windows](https://github.com/SaoNetwork/sao-cli/releases/download/v1.0.0/saods.exe)
 
-[linux](https://github.com)
+[linux](https://github.com/SaoNetwork/sao-cli/releases/download/v1.0.0/saods-linux)
 
-[darwin](https://github.com)
+[darwin](https://github.com/SaoNetwork/sao-cli/releases/download/v1.0.0/saods-darwin)
+
 
 ## Set environment
 you can set appId and apiKey in environment
