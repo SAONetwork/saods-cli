@@ -3,14 +3,17 @@ package main
 import (
 	"bytes"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"github.com/urfave/cli/v2"
 	"io"
 	"io/ioutil"
+	"mime"
 	"mime/multipart"
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 const AddFileEndPoint = "https://api.sao.network/saods/api/v1/file/addFile"
@@ -66,7 +69,6 @@ func AddFile(c *cli.Context) error {
 	}
 
 	basicAuth := base64.StdEncoding.EncodeToString([]byte(config.appId + ":" + config.apiKey))
-	fmt.Println("Basic Authorization Credential:", basicAuth)
 	req.Header.Add("Authorization", "Basic " + basicAuth)
 
 	req.Header.Set("Content-Type", writer.FormDataContentType())
@@ -77,12 +79,24 @@ func AddFile(c *cli.Context) error {
 	}
 	defer res.Body.Close()
 
+	if res.StatusCode == 502 || res.StatusCode == 404 {
+		fmt.Println("Unable to complete due to service error, please try it later")
+		return nil
+	}
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		fmt.Println(err)
 		return nil
 	}
-	fmt.Println(string(body))
+	result := body
+	if c.Bool("pretty") {
+		result, err = formatJSON(body)
+		if err != nil {
+			fmt.Println(err)
+			return nil
+		}
+	}
+	fmt.Println(string(result))
 
 	return nil
 }
@@ -142,7 +156,6 @@ func GetFile(c *cli.Context) error {
 		return nil
 	}
 	basicAuth := base64.StdEncoding.EncodeToString([]byte(config.appId + ":" + config.apiKey))
-	fmt.Println("Basic Authorization Credential:", basicAuth)
 	req.Header.Add("Authorization", "Basic " + basicAuth)
 
 	req.Header.Set("Content-Type", writer.FormDataContentType())
@@ -153,12 +166,41 @@ func GetFile(c *cli.Context) error {
 	}
 	defer res.Body.Close()
 
-	body, err := ioutil.ReadAll(res.Body)
+	if res.StatusCode == 502 || res.StatusCode == 404 {
+		fmt.Println("Unable to complete due to service error, please try it later")
+		return nil
+	}
+
+	getDispos := res.Header.Get("Content-Disposition")
+
+	fileName := "SAO_FILE"
+	if getDispos != "" {
+		_, params, err := mime.ParseMediaType(getDispos)
+		if err != nil {
+			fmt.Println(err)
+			return nil
+		}
+		fileName = params["filename"]
+	}
+
+	localPath := c.String("localPath")
+	if localPath != "" {
+		localPath = strings.TrimSuffix(localPath, "/")
+		fileName = filepath.FromSlash(localPath + "/" + fileName)
+	}
+	fmt.Println("The file stored in " + fileName)
+
+	out, err := os.Create(fileName)
 	if err != nil {
 		fmt.Println(err)
 		return nil
 	}
-	fmt.Println(string(body))
+	defer out.Close()
+	_, err = io.Copy(out, res.Body)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
 	return nil
 }
 
@@ -173,8 +215,14 @@ func listFiles(c *cli.Context) error {
 		page = "1"
 	}
 
+	size := c.String("size")
 
-	url := ListFilesEndPoint + "?size=100&page=" + page
+	if size == "" {
+		size = "100"
+	}
+
+
+	url := ListFilesEndPoint + "?size=" + size + "&page=" + page
 	method := "GET"
 
 	payload := &bytes.Buffer{}
@@ -206,11 +254,33 @@ func listFiles(c *cli.Context) error {
 	}
 	defer res.Body.Close()
 
+	if res.StatusCode == 502 || res.StatusCode == 404 {
+		fmt.Println("Unable to complete due to service error, please try it later")
+		return nil
+	}
+
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		fmt.Println(err)
 		return nil
 	}
-	fmt.Println(string(body))
+	result := body
+	if c.Bool("pretty") {
+		result, err = formatJSON(body)
+		if err != nil {
+			fmt.Println(err)
+			return nil
+		}
+	}
+	fmt.Println(string(result))
 	return nil
+}
+
+func formatJSON(data []byte) ([]byte, error) {
+	var out bytes.Buffer
+	err := json.Indent(&out, data, "", "    ")
+	if err == nil {
+		return out.Bytes(), err
+	}
+	return data, nil
 }

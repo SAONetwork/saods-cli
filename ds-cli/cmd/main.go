@@ -38,6 +38,10 @@ func main() {
 					Name:  "apiKey",
 					Usage: "api key used for authentication in REST APIs",
 				},
+				&cli.BoolFlag{
+					Name:  "pretty",
+					Usage: "return formatted json response",
+				},
 			},
 			Action: func(c *cli.Context) error {
 				return AddFile(c)
@@ -54,6 +58,10 @@ func main() {
 				&cli.StringFlag{
 					Name:  "hash",
 					Usage: "ipfs hash of the uploaded object",
+				},
+				&cli.StringFlag{
+					Name:  "localPath",
+					Usage: "Specify the local path where the file be stored",
 				},
 				&cli.StringFlag{
 					Name:  "appId",
@@ -87,6 +95,10 @@ func main() {
 				&cli.StringFlag{
 					Name:  "apiKey",
 					Usage: "api key used for authentication in REST APIs",
+				},
+				&cli.BoolFlag{
+					Name:  "pretty",
+					Usage: "return formatted json response",
 				},
 			},
 			Action: func(c *cli.Context) error {
