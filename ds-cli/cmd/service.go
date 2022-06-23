@@ -27,17 +27,17 @@ func AddFile(c *cli.Context) error {
 	}
 	localPath := c.String("localPath")
 	if localPath == "" {
-		fmt.Println("no localPath passed")
+		fmt.Println("no localPath set")
 		return nil
 	}
 
 	if config.appId == "" {
-		fmt.Println("no appId passed")
+		fmt.Println("no appId set")
 		return nil
 	}
 
 	if config.apiKey == "" {
-		fmt.Println("no apiKey passed")
+		fmt.Println("no apiKey set")
 		return nil
 	}
 
@@ -113,18 +113,13 @@ func GetFile(c *cli.Context) error {
 		return nil
 	}
 
-	if fileId == "" && hash == "" {
-		fmt.Println("please input either one parameters: fileId and hash")
-		return nil
-	}
-
 	if config.appId == "" {
-		fmt.Println("no appId passed")
+		fmt.Println("no appId set")
 		return nil
 	}
 
 	if config.apiKey == "" {
-		fmt.Println("no apiKey passed")
+		fmt.Println("no apiKey set")
 		return nil
 	}
 

@@ -32,19 +32,19 @@ saods getFile --help
 saods listFiles --help
 ```
 
-Here is the example to add file and get file:
+Here are the examples to add file, get file and list files:
 ```shell
-./saods addFile --localPath /path/to/my/file --appId myAppId --apiKey myApiKey
+./saods addFile --localPath /path/to/my/file --appId myAppId --apiKey myApiKey --pretty
 {
     "code":"200",
     "data":{
         "ID":1,
-        "CreatedAt":"2022-06-21T14:29:31.689Z",
-        "UpdatedAt":"2022-06-21T14:29:31.689Z",
+        "createdAt":"2022-06-21T14:29:31.689Z",
+        "updatedAt":"2022-06-21T14:29:31.689Z",
         "appId":"myAppId",
         "filename":"file",
         "contentType":"application/octet-stream",
-        "Size":317,
+        "size":317,
         "ipfsHash":"QmNwB9iCjTwvAS3WjRe1EJzt5E4f966TQGPaNXdCPVCd2b",
         "cid":"",
         "storageProvider":""
@@ -55,4 +55,26 @@ Here is the example to add file and get file:
 
 ./saods getFile --hash myHash --appId myAppId --apiKey myApiKey
 --respond with file content
+
+./saods listFiles --appId myAppId --apiKey myApiKey --pretty
+{
+    "data": [
+        {
+            "id": "1",
+            "filename": "file",
+            "format": "application/octet-stream",
+            "size": 317,
+            "lastModifiedAt": 1655455241881,
+            "createdAt": 1655455241881,
+            "cid": "",
+            "ipfsHash": "QmNwB9iCjTwvAS3WjRe1EJzt5E4f966TQGPaNXdCPVCd2b",
+            "storageProvider": "",
+            "appId": "myAppId"
+        }
+    ],
+    "code": "200",
+    "timestamp": 1655948182072,
+    "msg": "ok"
+}
+
 ```

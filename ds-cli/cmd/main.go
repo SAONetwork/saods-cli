@@ -49,7 +49,7 @@ func main() {
 		},
 		{
 			Name:  "getFile",
-			Usage: "get a file",
+			Usage: "get a file, you can set either fileId or hash to get your file, if both parameters set, the command will use fileId to get file",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:  "fileId",
