@@ -243,7 +243,6 @@ func listFiles(c *cli.Context) error {
 		return nil
 	}
 	basicAuth := base64.StdEncoding.EncodeToString([]byte(config.appId + ":" + config.apiKey))
-	fmt.Println("Basic Authorization Credential:", basicAuth)
 	req.Header.Add("Authorization", "Basic " + basicAuth)
 
 	req.Header.Set("Content-Type", writer.FormDataContentType())
