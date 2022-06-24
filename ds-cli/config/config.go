@@ -6,6 +6,7 @@ import (
 	"github.com/mitchellh/go-homedir"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 )
 
 type Config struct {
@@ -20,7 +21,7 @@ func GetConfig() (Config, error) {
 	if err != nil {
 		return cliConfig, err
 	}
-	cfgPath := hDir + "/.saods/ds-cli.json"
+	cfgPath := hDir + filepath.FromSlash("/.saods/ds-cli.json")
 
 	f, err := os.Open(cfgPath)
 	if err != nil {
@@ -43,7 +44,7 @@ func SetConfig(config Config) error {
 	if err != nil {
 		return err
 	}
-	cfgPath := hDir + "/.saods/ds-cli.json"
+	cfgPath := hDir + filepath.FromSlash("/.saods/ds-cli.json")
 
 	out, err := os.Create(cfgPath)
 	if err != nil {
@@ -63,6 +64,8 @@ func SetConfig(config Config) error {
 		fmt.Println(err)
 		return nil
 	}
+
+	fmt.Println("config was successfully saved in " + cfgPath + ", you can now edit the config file directly")
 
 	return nil
 }

@@ -20,6 +20,7 @@ import (
 const AddFileEndPoint = "/saods/api/v1/file/addFile"
 const GetFileEndPoint = "/saods/api/v1/file/"
 const ListFilesEndPoint = "/sao-data-store/api/file/listFiles"
+const DefaultServiceUrl = "https://api.sao.network"
 
 func AddFile(c *cli.Context) error {
 	loadConfig(c)
@@ -39,7 +40,11 @@ func AddFile(c *cli.Context) error {
 		return nil
 	}
 
-	url := "https://api.sao.network" + AddFileEndPoint
+	serviceUrl := DefaultServiceUrl
+	if cfg.ServiceUrl != "" {
+		serviceUrl = cfg.ServiceUrl
+	}
+	url := serviceUrl + AddFileEndPoint
 	method := "POST"
 
 	payload := &bytes.Buffer{}
@@ -118,7 +123,11 @@ func GetFile(c *cli.Context) error {
 		return nil
 	}
 
-	url := GetFileEndPoint
+	serviceUrl := DefaultServiceUrl
+	if cfg.ServiceUrl != "" {
+		serviceUrl = cfg.ServiceUrl
+	}
+	url := serviceUrl + GetFileEndPoint
 	if fileId != "" {
 		url = url + "by-id/" + fileId
 	} else if hash != "" {
@@ -208,7 +217,11 @@ func listFiles(c *cli.Context) error {
 		size = "100"
 	}
 
-	url := ListFilesEndPoint + "?size=" + size + "&page=" + page
+	serviceUrl := DefaultServiceUrl
+	if cfg.ServiceUrl != "" {
+		serviceUrl = cfg.ServiceUrl
+	}
+	url := serviceUrl + ListFilesEndPoint + "?size=" + size + "&page=" + page
 	method := "GET"
 
 	payload := &bytes.Buffer{}
@@ -282,6 +295,24 @@ func setConfigFile(c *cli.Context) error {
 		fmt.Println(err)
 		return nil
 	}
+	return nil
+}
+
+func getConfigFile() error {
+	cfg, _ = config.GetConfig()
+	configContent, err := json.Marshal(cfg)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+
+	result, err := formatJSON(configContent)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+
+	fmt.Println(string(result))
 	return nil
 }
 

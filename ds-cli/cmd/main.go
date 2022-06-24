@@ -100,7 +100,7 @@ func main() {
 		},
 		{
 			Name:  "config",
-			Usage: "config appId and apiKey, instead of setting the values everytime",
+			Usage: "you can save config properties in config file, so that you don't need to setting the values everytime",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:  "appId",
@@ -113,6 +113,15 @@ func main() {
 				&cli.StringFlag{
 					Name:  "serviceUrl",
 					Usage: "set service url manually",
+				},
+			},
+			Subcommands: []*cli.Command{
+				{
+					Name:  "show",
+					Usage: "show current config",
+					Action: func(c *cli.Context) error {
+						return getConfigFile()
+					},
 				},
 			},
 			Action: func(c *cli.Context) error {
