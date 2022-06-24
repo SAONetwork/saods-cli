@@ -11,6 +11,7 @@ import (
 type Config struct {
 	AppId  string `json:"appId"`
 	ApiKey string `json:"apiKey"`
+	ServiceUrl string `json:"serviceUrl"`
 }
 
 func GetConfig() (Config, error) {

@@ -12,7 +12,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "saods"
 	app.Version = "v1.0.0"
-	app.Usage = "SAO data store"
+	app.Usage = "SAO Data Store"
 	app.Action = run
 	app.Commands = []*cli.Command{
 		{
@@ -109,6 +109,10 @@ func main() {
 				&cli.StringFlag{
 					Name:  "apiKey",
 					Usage: "api key used for authentication in REST APIs",
+				},
+				&cli.StringFlag{
+					Name:  "serviceUrl",
+					Usage: "set service url manually",
 				},
 			},
 			Action: func(c *cli.Context) error {

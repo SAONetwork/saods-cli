@@ -17,9 +17,9 @@ import (
 	"strings"
 )
 
-const AddFileEndPoint = "https://api.sao.network/saods/api/v1/file/addFile"
-const GetFileEndPoint = "https://api.sao.network/saods/api/v1/file/"
-const ListFilesEndPoint = "https://api.sao.network/sao-data-store/api/file/listFiles"
+const AddFileEndPoint = "/saods/api/v1/file/addFile"
+const GetFileEndPoint = "/saods/api/v1/file/"
+const ListFilesEndPoint = "/sao-data-store/api/file/listFiles"
 
 func AddFile(c *cli.Context) error {
 	loadConfig(c)
@@ -39,7 +39,7 @@ func AddFile(c *cli.Context) error {
 		return nil
 	}
 
-	url := AddFileEndPoint
+	url := "https://api.sao.network" + AddFileEndPoint
 	method := "POST"
 
 	payload := &bytes.Buffer{}
@@ -260,14 +260,12 @@ func listFiles(c *cli.Context) error {
 }
 
 func loadConfig(c *cli.Context) {
+	cfg, _ = config.GetConfig()
 	if c.String("appId") != "" || c.String("apiKey") != "" {
-		cfg = config.Config{
-			AppId:  c.String("appId"),
-			ApiKey: c.String("apiKey"),
-		}
-	} else {
-		cfg, _ = config.GetConfig()
+		cfg.AppId = c.String("appId")
+		cfg.ApiKey = c.String("apiKey")
 	}
+	fmt.Print("service url:" + cfg.ServiceUrl)
 }
 
 func setConfigFile(c *cli.Context) error {
@@ -278,6 +276,7 @@ func setConfigFile(c *cli.Context) error {
 	cfg = config.Config{
 		AppId:  c.String("appId"),
 		ApiKey: c.String("apiKey"),
+		ServiceUrl: c.String("serviceUrl"),
 	}
 	err := config.SetConfig(cfg)
 	if err != nil {
