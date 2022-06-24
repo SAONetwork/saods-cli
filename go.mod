@@ -3,6 +3,7 @@ module sao-datastore-cli
 go 1.17
 
 require (
+	github.com/mitchellh/go-homedir v1.1.0
 	github.com/urfave/cli/v2 v2.8.1
 )
 

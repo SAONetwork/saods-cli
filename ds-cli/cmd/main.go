@@ -3,17 +3,10 @@ package main
 import (
 	"github.com/urfave/cli/v2"
 	"os"
+	"sao-datastore-cli/ds-cli/config"
 )
 
-type (
-	// Config information.
-	Config struct {
-		appId  string
-		apiKey string
-	}
-)
-
-var config Config
+var cfg config.Config
 
 func main() {
 	app := cli.NewApp()
@@ -105,8 +98,24 @@ func main() {
 				return listFiles(c)
 			},
 		},
+		{
+			Name:  "config",
+			Usage: "config appId and apiKey, instead of setting the values everytime",
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:  "appId",
+					Usage: "application id which the uploaded object belongs to",
+				},
+				&cli.StringFlag{
+					Name:  "apiKey",
+					Usage: "api key used for authentication in REST APIs",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				return setConfigFile(c)
+			},
+		},
 	}
-
 	app.Run(os.Args)
 }
 

@@ -13,6 +13,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"sao-datastore-cli/ds-cli/config"
 	"strings"
 )
 
@@ -21,22 +22,19 @@ const GetFileEndPoint = "https://api.sao.network/saods/api/v1/file/"
 const ListFilesEndPoint = "https://api.sao.network/sao-data-store/api/file/listFiles"
 
 func AddFile(c *cli.Context) error {
-	config = Config{
-		appId:     c.String("appId"),
-		apiKey:    c.String("apiKey"),
-	}
+	loadConfig(c)
 	localPath := c.String("localPath")
 	if localPath == "" {
 		fmt.Println("no localPath set")
 		return nil
 	}
 
-	if config.appId == "" {
+	if cfg.AppId == "" {
 		fmt.Println("no appId set")
 		return nil
 	}
 
-	if config.apiKey == "" {
+	if cfg.ApiKey == "" {
 		fmt.Println("no apiKey set")
 		return nil
 	}
@@ -68,7 +66,7 @@ func AddFile(c *cli.Context) error {
 		return nil
 	}
 
-	basicAuth := base64.StdEncoding.EncodeToString([]byte(config.appId + ":" + config.apiKey))
+	basicAuth := base64.StdEncoding.EncodeToString([]byte(cfg.AppId + ":" + cfg.ApiKey))
 	req.Header.Add("Authorization", "Basic " + basicAuth)
 
 	req.Header.Set("Content-Type", writer.FormDataContentType())
@@ -102,10 +100,7 @@ func AddFile(c *cli.Context) error {
 }
 
 func GetFile(c *cli.Context) error {
-	config = Config{
-		appId:     c.String("appId"),
-		apiKey:    c.String("apiKey"),
-	}
+	loadConfig(c)
 	fileId := c.String("fileId")
 	hash := c.String("hash")
 	if fileId != "" && hash != "" {
@@ -113,12 +108,12 @@ func GetFile(c *cli.Context) error {
 		return nil
 	}
 
-	if config.appId == "" {
+	if cfg.AppId == "" {
 		fmt.Println("no appId set")
 		return nil
 	}
 
-	if config.apiKey == "" {
+	if cfg.ApiKey == "" {
 		fmt.Println("no apiKey set")
 		return nil
 	}
@@ -150,7 +145,7 @@ func GetFile(c *cli.Context) error {
 		fmt.Println(err)
 		return nil
 	}
-	basicAuth := base64.StdEncoding.EncodeToString([]byte(config.appId + ":" + config.apiKey))
+	basicAuth := base64.StdEncoding.EncodeToString([]byte(cfg.AppId + ":" + cfg.ApiKey))
 	req.Header.Add("Authorization", "Basic " + basicAuth)
 
 	req.Header.Set("Content-Type", writer.FormDataContentType())
@@ -200,10 +195,7 @@ func GetFile(c *cli.Context) error {
 }
 
 func listFiles(c *cli.Context) error {
-	config = Config{
-		appId:     c.String("appId"),
-		apiKey:    c.String("apiKey"),
-	}
+	loadConfig(c)
 	page := c.String("page")
 
 	if page == "" {
@@ -216,7 +208,6 @@ func listFiles(c *cli.Context) error {
 		size = "100"
 	}
 
-
 	url := ListFilesEndPoint + "?size=" + size + "&page=" + page
 	method := "GET"
 
@@ -228,17 +219,15 @@ func listFiles(c *cli.Context) error {
 		return nil
 	}
 
-
-	client := &http.Client {
-	}
+	client := &http.Client{}
 	req, err := http.NewRequest(method, url, payload)
 
 	if err != nil {
 		fmt.Println(err)
 		return nil
 	}
-	basicAuth := base64.StdEncoding.EncodeToString([]byte(config.appId + ":" + config.apiKey))
-	req.Header.Add("Authorization", "Basic " + basicAuth)
+	basicAuth := base64.StdEncoding.EncodeToString([]byte(cfg.AppId + ":" + cfg.ApiKey))
+	req.Header.Add("Authorization", "Basic "+basicAuth)
 
 	req.Header.Set("Content-Type", writer.FormDataContentType())
 	res, err := client.Do(req)
@@ -267,6 +256,34 @@ func listFiles(c *cli.Context) error {
 		}
 	}
 	fmt.Println(string(result))
+	return nil
+}
+
+func loadConfig(c *cli.Context) {
+	if c.String("appId") != "" || c.String("apiKey") != "" {
+		cfg = config.Config{
+			AppId:  c.String("appId"),
+			ApiKey: c.String("apiKey"),
+		}
+	} else {
+		cfg, _ = config.GetConfig()
+	}
+}
+
+func setConfigFile(c *cli.Context) error {
+	if c.String("appId") == "" || c.String("apiKey") == "" {
+		fmt.Println("appId or apiKey is not properly set")
+		return nil
+	}
+	cfg = config.Config{
+		AppId:  c.String("appId"),
+		ApiKey: c.String("apiKey"),
+	}
+	err := config.SetConfig(cfg)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
 	return nil
 }
 

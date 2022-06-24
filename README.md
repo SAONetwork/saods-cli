@@ -19,17 +19,26 @@ Currently, CLI is supported on the following platforms, please choose your bin f
 
 
 ## Set environment
-you can set appId and apiKey in environment
+you can save your appId and apiKey in config file, so that you don't need to set the parameters everytime
+```shell
+./saods config --appId myAppId --apiKey myApiKey
+```
 
 ## Using the CLI
 
 Learn to use any command:
 
 ```shell
-saods --help
-saods addFile --help
-saods getFile --help
-saods listFiles --help
+./saods --help
+```
+```shell
+./saods addFile --help
+```
+```shell
+./saods getFile --help
+```
+```shell
+./saods listFiles --help
 ```
 
 Here are the examples to add file, get file and list files:
