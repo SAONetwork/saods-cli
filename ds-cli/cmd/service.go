@@ -265,7 +265,6 @@ func loadConfig(c *cli.Context) {
 		cfg.AppId = c.String("appId")
 		cfg.ApiKey = c.String("apiKey")
 	}
-	fmt.Print("service url:" + cfg.ServiceUrl)
 }
 
 func setConfigFile(c *cli.Context) error {
