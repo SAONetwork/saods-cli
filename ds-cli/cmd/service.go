@@ -44,7 +44,7 @@ func AddFile(c *cli.Context) error {
 	if cfg.ServiceUrl != "" {
 		serviceUrl = cfg.ServiceUrl
 	}
-	url := serviceUrl + AddFileEndPoint
+	url := fmt.Sprintf("%s%s", serviceUrl, AddFileEndPoint)
 	method := "POST"
 
 	payload := &bytes.Buffer{}
@@ -71,10 +71,7 @@ func AddFile(c *cli.Context) error {
 		return nil
 	}
 
-	basicAuth := base64.StdEncoding.EncodeToString([]byte(cfg.AppId + ":" + cfg.ApiKey))
-	req.Header.Add("Authorization", "Basic " + basicAuth)
-
-	req.Header.Set("Content-Type", writer.FormDataContentType())
+	addHeader(req, writer)
 	res, err := client.Do(req)
 	if err != nil {
 		fmt.Println(err)
@@ -82,10 +79,11 @@ func AddFile(c *cli.Context) error {
 	}
 	defer res.Body.Close()
 
-	if res.StatusCode == 502 || res.StatusCode == 404 {
-		fmt.Println("Unable to complete due to service error, please try it later")
+	hasError := handleErrorStatus(res)
+	if hasError {
 		return nil
 	}
+
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		fmt.Println(err)
@@ -127,11 +125,11 @@ func GetFile(c *cli.Context) error {
 	if cfg.ServiceUrl != "" {
 		serviceUrl = cfg.ServiceUrl
 	}
-	url := serviceUrl + GetFileEndPoint
+	url := fmt.Sprintf("%s%s", serviceUrl, GetFileEndPoint)
 	if fileId != "" {
-		url = url + "by-id/" + fileId
+		url = fmt.Sprintf("%s%s%s", url, "by-id/", fileId)
 	} else if hash != "" {
-		url = url + "by-hash/" + hash
+		url = fmt.Sprintf("%s%s%s", url, "by-hash/", hash)
 	} else {
 		return nil
 	}
@@ -154,10 +152,9 @@ func GetFile(c *cli.Context) error {
 		fmt.Println(err)
 		return nil
 	}
-	basicAuth := base64.StdEncoding.EncodeToString([]byte(cfg.AppId + ":" + cfg.ApiKey))
-	req.Header.Add("Authorization", "Basic " + basicAuth)
 
-	req.Header.Set("Content-Type", writer.FormDataContentType())
+	addHeader(req, writer)
+
 	res, err := client.Do(req)
 	if err != nil {
 		fmt.Println(err)
@@ -165,8 +162,8 @@ func GetFile(c *cli.Context) error {
 	}
 	defer res.Body.Close()
 
-	if res.StatusCode == 502 || res.StatusCode == 404 {
-		fmt.Println("Unable to complete due to service error, please try it later")
+	hasError := handleErrorStatus(res)
+	if hasError {
 		return nil
 	}
 
@@ -221,7 +218,7 @@ func listFiles(c *cli.Context) error {
 	if cfg.ServiceUrl != "" {
 		serviceUrl = cfg.ServiceUrl
 	}
-	url := serviceUrl + ListFilesEndPoint + "?size=" + size + "&page=" + page
+	url := fmt.Sprintf("%s%s%s%s%s%s", serviceUrl, ListFilesEndPoint, "?size=", size, "&page=", page)
 	method := "GET"
 
 	payload := &bytes.Buffer{}
@@ -239,10 +236,9 @@ func listFiles(c *cli.Context) error {
 		fmt.Println(err)
 		return nil
 	}
-	basicAuth := base64.StdEncoding.EncodeToString([]byte(cfg.AppId + ":" + cfg.ApiKey))
-	req.Header.Add("Authorization", "Basic "+basicAuth)
 
-	req.Header.Set("Content-Type", writer.FormDataContentType())
+	addHeader(req, writer)
+
 	res, err := client.Do(req)
 	if err != nil {
 		fmt.Println(err)
@@ -250,8 +246,8 @@ func listFiles(c *cli.Context) error {
 	}
 	defer res.Body.Close()
 
-	if res.StatusCode == 502 || res.StatusCode == 404 {
-		fmt.Println("Unable to complete due to service error, please try it later")
+	hasError := handleErrorStatus(res)
+	if hasError {
 		return nil
 	}
 
@@ -314,6 +310,21 @@ func getConfigFile() error {
 
 	fmt.Println(string(result))
 	return nil
+}
+
+func addHeader(req *http.Request, writer *multipart.Writer) {
+	basicAuth := base64.StdEncoding.EncodeToString([]byte(cfg.AppId + ":" + cfg.ApiKey))
+	req.Header.Add("Authorization", "Basic "+basicAuth)
+
+	req.Header.Set("Content-Type", writer.FormDataContentType())
+}
+
+func handleErrorStatus(res *http.Response) bool {
+	if res.StatusCode == 502 || res.StatusCode == 404 {
+		fmt.Println("Unable to complete due to service error, please try it later")
+		return true
+	}
+	return false
 }
 
 func formatJSON(data []byte) ([]byte, error) {
