@@ -46,7 +46,7 @@ Learn to use any command:
 
 Here are the examples to add file, get file and list files:
 ```shell
-./saods addFile --localPath /path/to/my/file --appId myAppId --apiKey myApiKey --pretty
+./saods addFile --localPath /path/to/my/file/filename --appId myAppId --apiKey myApiKey --pretty
 {
     "code":"200",
     "data":{
@@ -54,7 +54,7 @@ Here are the examples to add file, get file and list files:
         "createdAt":"2022-06-21T14:29:31.689Z",
         "updatedAt":"2022-06-21T14:29:31.689Z",
         "appId":"myAppId",
-        "filename":"file",
+        "filename":"filename",
         "contentType":"application/octet-stream",
         "size":317,
         "ipfsHash":"QmNwB9iCjTwvAS3WjRe1EJzt5E4f966TQGPaNXdCPVCd2b",
@@ -65,15 +65,15 @@ Here are the examples to add file, get file and list files:
     "timestamp":1655821771714
 }
 
-./saods getFile --hash myHash --appId myAppId --apiKey myApiKey
---respond with file content
+./saods getFile --hash myHash --appId myAppId --apiKey myApiKey --localPath /path/to/my/file
+--the file will be stored in /path/to/my/file
 
 ./saods listFiles --appId myAppId --apiKey myApiKey --pretty
 {
     "data": [
         {
             "id": "1",
-            "filename": "file",
+            "filename": "filename",
             "format": "application/octet-stream",
             "size": 317,
             "lastModifiedAt": 1655455241881,

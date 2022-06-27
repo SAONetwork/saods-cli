@@ -20,8 +20,8 @@ func main() {
 			Usage: "add a file",
 			Flags: []cli.Flag{
 				&cli.StringFlag{
-					Name:  "localPath",
-					Usage: "the path on the local filesystem for the file that will be uploaded",
+					Name:  "file",
+					Usage: "the parameter including the filename and path on the local filesystem for the file that will be uploaded, example : /path/to/my/file/filename",
 				},
 				&cli.StringFlag{
 					Name:  "appId",

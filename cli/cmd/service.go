@@ -24,9 +24,9 @@ const DefaultServiceUrl = "https://api.sao.network"
 
 func AddFile(c *cli.Context) error {
 	loadConfig(c)
-	localPath := c.String("localPath")
-	if localPath == "" {
-		fmt.Println("no localPath set")
+	fileWithPath := c.String("file")
+	if fileWithPath == "" {
+		fmt.Println("no file set")
 		return nil
 	}
 
@@ -49,9 +49,9 @@ func AddFile(c *cli.Context) error {
 
 	payload := &bytes.Buffer{}
 	writer := multipart.NewWriter(payload)
-	file, errFile1 := os.Open(localPath)
+	file, errFile1 := os.Open(fileWithPath)
 	defer file.Close()
-	part1, errFile1 := writer.CreateFormFile("file", filepath.Base(localPath))
+	part1, errFile1 := writer.CreateFormFile("file", filepath.Base(fileWithPath))
 	_, errFile1 = io.Copy(part1, file)
 	if errFile1 != nil {
 		fmt.Println(errFile1)
