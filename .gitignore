@@ -1,4 +1,4 @@
 .idea/
 .DS_Store
-ds-cli/bin/
-ds-cli/saods
+cli/bin/
+cli/saods

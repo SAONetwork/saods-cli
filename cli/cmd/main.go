@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/urfave/cli/v2"
 	"os"
-	"sao-datastore-cli/ds-cli/config"
+	"sao-datastore-cli/cli/config"
 )
 
 var cfg config.Config

@@ -13,7 +13,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"sao-datastore-cli/ds-cli/config"
+	"sao-datastore-cli/cli/config"
 	"strings"
 )
 
