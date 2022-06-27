@@ -54,7 +54,7 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "localPath",
-					Usage: "Specify the path on the local filesystem for the file that will be stored",
+					Usage: "specify the path on the local filesystem for the file that will be stored",
 				},
 				&cli.StringFlag{
 					Name:  "appId",
