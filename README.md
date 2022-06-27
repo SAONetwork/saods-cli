@@ -12,6 +12,8 @@ CLI users and developers must both follow these steps to get the application and
 Currently, CLI is supported on the following platforms, please choose your bin file:
 
 [windows](https://github.com/SaoNetwork/sao-cli/releases/download/v1.0.0/saods.exe)
+(If you are not able to run the cli, try to change it to compatibility mode for Windows 7)
+![compatibility_mode.png](compatibility_mode.png)
 
 [linux](https://github.com/SaoNetwork/sao-cli/releases/download/v1.0.0/saods-linux)
 
