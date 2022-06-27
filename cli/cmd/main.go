@@ -21,7 +21,7 @@ func main() {
 			Flags: []cli.Flag{
 				&cli.StringFlag{
 					Name:  "localPath",
-					Usage: "file local path",
+					Usage: "the path on the local filesystem for the file that will be uploaded",
 				},
 				&cli.StringFlag{
 					Name:  "appId",
@@ -54,7 +54,7 @@ func main() {
 				},
 				&cli.StringFlag{
 					Name:  "localPath",
-					Usage: "Specify the local path where the file be stored",
+					Usage: "Specify the path on the local filesystem for the file that will be stored",
 				},
 				&cli.StringFlag{
 					Name:  "appId",
