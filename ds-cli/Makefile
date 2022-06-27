@@ -17,6 +17,6 @@ docker_image: docker_build
 	docker build -t $(DEPLOY_ACCOUNT)/$(DEPLOY_IMAGE) -f Dockerfile .
 
 build_cross:
-	GOOS=linux   GOARCH=amd64 CGO_ENABLED=0 go build -o bin/$(EXECUTABLE)-linux ./cmd
+	GOOS=linux   GOARCH=amd64 CGO_ENABLED=0 go build -o bin/$(EXECUTABLE) ./cmd
 	GOOS=windows GOARCH=amd64 CGO_ENABLED=0 go build -o bin/$(EXECUTABLE).exe ./cmd
 	GOOS=darwin  GOARCH=amd64 CGO_ENABLED=0 go build -o bin/$(EXECUTABLE)-darwin ./cmd
